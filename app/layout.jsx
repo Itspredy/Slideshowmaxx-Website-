@@ -1,4 +1,5 @@
 import './globals.css';
+import './purchase.css';
 
 export const metadata = {
   title: 'Slideshowmax · App marketing content',

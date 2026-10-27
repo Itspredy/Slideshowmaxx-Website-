@@ -293,16 +293,24 @@ if (savedOfferState === 'open') openOffer(null);
 else resumeTimedOffer();
 document.querySelector('.toast-close').addEventListener('click', () => { toast.style.display = 'none'; });
 document.querySelector('.modal-close').addEventListener('click', closeOffer);
-document.querySelector('.decline').addEventListener('click', closeOffer);
-overlay.addEventListener('click', event => { if (event.target === overlay) closeOffer(); });
-document.querySelectorAll('.open-offer').forEach(link => link.addEventListener('click', event => {
-  event.preventDefault();
-  openOffer(link);
-}));
-document.getElementById('discount-cta').addEventListener('click', event => {
-  event.preventDefault();
+document.querySelector('.decline').addEventListener('click', () => {
   closeOffer();
+  window.location.assign(checkoutLink('/checkout/start?offer=regular'));
 });
+overlay.addEventListener('click', event => { if (event.target === overlay) closeOffer(); });
+function checkoutLink(path) {
+  const configuredOrigin = window.SLIDESHOWMAX_CHECKOUT_ORIGIN;
+  if (!configuredOrigin) return path;
+  try {
+    const origin = new URL(configuredOrigin);
+    if (origin.protocol !== 'https:' && origin.hostname !== 'localhost') return path;
+    return new URL(path, origin).toString();
+  } catch { return path; }
+}
+document.querySelectorAll('a[href^="/checkout/start"]').forEach(link => {
+  link.href = checkoutLink(link.getAttribute('href'));
+});
+document.getElementById('discount-cta').addEventListener('click', () => saveOfferState('closed'));
 document.addEventListener('keydown', event => {
   if (event.key === 'Escape') {
     if (!viewer.hidden) closeViewer();

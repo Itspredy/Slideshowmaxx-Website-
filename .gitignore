@@ -3,3 +3,6 @@ node_modules/
 out/
 *.log
 .npm-cache/
+.env
+.env.*
+!.env.example
